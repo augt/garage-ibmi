@@ -1,4 +1,6 @@
 "use client";
+import InterventionForm from "@/components/InterventionForm";
+import Popin from "@/components/Popin";
 import Table from "@/components/Table";
 import { useEffect, useState } from "react";
 
@@ -20,6 +22,7 @@ export default function InterventionsPage() {
   >([]);
   const [licensePlateFilter, setLicensePlateFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [isPopinOpen, setIsPopinOpen] = useState(false);
   async function fetchAllInterventions() {
     const data = await fetch(
       `${process.env.NEXT_PUBLIC_API_SCHEME}://${process.env.NEXT_PUBLIC_API_HOST}/TACQINTAPI`
@@ -47,7 +50,7 @@ export default function InterventionsPage() {
   }, []);
 
   return (
-    <main className="flex flex-col items-center mt-12 gap-4">
+    <main className="flex flex-col items-center mt-12 mb-12 gap-4">
       <form className="flex flex-col items-center gap-4">
         <div className="flex gap-2">
           <label htmlFor="licencePlate">filtrer par immatriculation :</label>
@@ -81,7 +84,15 @@ export default function InterventionsPage() {
           filtrer
         </button>
       </form>
-
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          setIsPopinOpen(true);
+        }}
+        className="border p-1 w-fit hover:cursor-pointer"
+      >
+        Ajouter intervention
+      </button>
       <Table
         tableHead={[
           "Date",
@@ -92,6 +103,19 @@ export default function InterventionsPage() {
         ]}
         tablelines={interventionsList}
       />
+      {isPopinOpen && (
+        <Popin
+          onClose={() => {
+            setIsPopinOpen(false);
+          }}
+        >
+          <InterventionForm
+            onClose={() => {
+              setIsPopinOpen(false);
+            }}
+          />
+        </Popin>
+      )}
     </main>
   );
 }
