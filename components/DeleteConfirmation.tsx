@@ -16,6 +16,8 @@ export default function InterventionForm({
         }
       );
       if (!response.ok) {
+        const errorMessage = await response.text();
+        console.log(errorMessage);
         throw new Error("Erreur HTTP :" + response.status);
       }
       onClose();
